@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Mechanical Engineering Curriculum — Blueprint</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f2740">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ME Curriculum">
+<style>
+  :root{
+    --blueprint:#1a3c5e;
+    --blueprint-dark:#0f2740;
+    --blueprint-darker:#0a1c30;
+    --line:#bcd9f0;
+    --line-dim:#7fa8c9;
+    --white:#eaf4ff;
+    --brass:#c9a24b;
+    --brass-dark:#a9822f;
+    --success:#6fcf97;
+    --error:#e0847a;
+    --paper:#f4f8fb;
+    --ink:#12293f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      repeating-linear-gradient(0deg, rgba(234,244,255,0.05) 0px, rgba(234,244,255,0.05) 1px, transparent 1px, transparent 28px),
+      repeating-linear-gradient(90deg, rgba(234,244,255,0.05) 0px, rgba(234,244,255,0.05) 1px, transparent 1px, transparent 28px),
+      linear-gradient(160deg, var(--blueprint) 0%, var(--blueprint-dark) 60%, var(--blueprint-darker) 100%);
+    color:var(--white);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;
+    line-height:1.5;
+    -webkit-tap-highlight-color:transparent;
+  }
+  header{
+    padding:22px 18px 14px;
+    border-bottom:2px solid var(--line-dim);
+    position:sticky;top:0;
+    background:linear-gradient(160deg, var(--blueprint) 0%, var(--blueprint-dark) 100%);
+    z-index:20;
+  }
+  .titleblock{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;}
+  h1{
+    font-family:Georgia,"Times New Roman",serif;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    font-size:1.05rem;
+    margin:0 0 4px;
+    color:var(--white);
+  }
+  .subtitle{font-size:0.75rem;color:var(--line-dim);letter-spacing:0.4px;}
+  .gauge-wrap{display:flex;align-items:center;gap:12px;}
+  .dial{
+    width:72px;height:72px;border-radius:50%;
+    background:conic-gradient(var(--brass) calc(var(--pct,0)*1%), rgba(234,244,255,0.12) 0);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    border:2px solid var(--line-dim);
+  }
+  .dial::before{
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    background:var(--blueprint-dark);border:1px solid rgba(234,244,255,0.2);
+  }
+  .dial span{position:relative;z-index:2;font-family:Georgia,serif;font-size:0.9rem;font-weight:bold;color:var(--brass);}
+  .rank-seal{
+    border:2px solid var(--brass);border-radius:50%;
+    width:50px;height:50px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:Georgia,serif;font-size:0.52rem;letter-spacing:0.4px;text-transform:uppercase;
+    color:var(--brass);padding:4px;transform:rotate(-8deg);flex-shrink:0;
+  }
+  .rank-seal.bump{animation:stamp 0.5s ease;}
+  @keyframes stamp{
+    0%{transform:rotate(-8deg) scale(1.6);opacity:0;}
+    60%{transform:rotate(-8deg) scale(0.95);opacity:1;}
+    100%{transform:rotate(-8deg) scale(1);}
+  }
+  .catbar{
+    display:flex;gap:6px;overflow-x:auto;padding:10px 18px 0;
+    background:rgba(10,28,48,0.5);
+  }
+  .catbar button{
+    flex-shrink:0;background:transparent;border:1px solid rgba(234,244,255,0.25);
+    color:var(--line-dim);padding:5px 10px;border-radius:12px;font-size:0.65rem;
+    letter-spacing:0.3px;cursor:pointer;text-transform:uppercase;
+  }
+  .catbar button.activeCat{background:rgba(201,162,75,0.2);border-color:var(--brass);color:var(--brass);}
+  nav{
+    display:flex;gap:8px;overflow-x:auto;padding:10px 18px 12px;
+    background:rgba(10,28,48,0.5);border-bottom:1px solid rgba(234,244,255,0.15);
+  }
+  nav button{
+    flex-shrink:0;background:transparent;border:1px solid var(--line-dim);color:var(--line);
+    padding:7px 12px;border-radius:3px;font-size:0.7rem;letter-spacing:0.2px;cursor:pointer;white-space:nowrap;
+  }
+  nav button.active{background:var(--brass);border-color:var(--brass);color:var(--blueprint-darker);font-weight:bold;}
+  nav button.done::after{content:" ✓";color:var(--success);}
+  nav button.active.done::after{color:var(--blueprint-darker);}
+  main{max-width:720px;margin:0 auto;padding:20px 18px 60px;}
+  .module{display:none;}
+  .module.active{display:block;animation:fade 0.25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .module h2{font-family:Georgia,serif;font-size:1.2rem;border-bottom:2px solid var(--brass);padding-bottom:8px;margin-bottom:4px;}
+  .module .tag{font-size:0.66rem;color:var(--brass);letter-spacing:1px;text-transform:uppercase;}
+  .concept{background:rgba(234,244,255,0.06);border-left:3px solid var(--brass);padding:12px 14px;margin:14px 0;font-size:0.94rem;}
+  .concept b{color:var(--brass);}
+  .example{background:var(--paper);color:var(--ink);border-radius:4px;padding:14px 16px;margin:14px 0;font-size:0.9rem;}
+  .example .label{font-size:0.66rem;text-transform:uppercase;letter-spacing:1px;color:var(--blueprint);font-weight:bold;margin-bottom:6px;}
+  .example .math{font-family:"Courier New",Courier,monospace;background:#e2ecf4;padding:8px 10px;border-radius:3px;display:block;margin:6px 0;}
+  canvas.plot{width:100%;max-width:100%;height:auto;background:var(--paper);border-radius:4px;margin:10px 0;display:block;}
+  .why{font-size:0.8rem;color:var(--line-dim);margin-top:8px;font-style:italic;}
+  .exercise{border:1px solid rgba(234,244,255,0.25);border-radius:5px;padding:14px;margin:16px 0;background:rgba(10,28,48,0.35);}
+  .exercise .q{font-size:0.9rem;margin-bottom:10px;}
+  .exercise input[type=text]{
+    background:var(--paper);color:var(--ink);border:1px solid var(--line-dim);border-radius:3px;
+    padding:8px 10px;font-size:0.95rem;width:140px;font-family:"Courier New",monospace;
+  }
+  .opt-btn{
+    display:block;width:100%;text-align:left;background:rgba(234,244,255,0.08);
+    border:1px solid var(--line-dim);color:var(--white);padding:9px 12px;border-radius:3px;
+    margin-bottom:6px;font-size:0.86rem;cursor:pointer;
+  }
+  .opt-btn:active{background:rgba(234,244,255,0.18);}
+  .submit-btn{background:var(--brass);color:var(--blueprint-darker);border:none;border-radius:3px;
+    padding:8px 16px;font-weight:bold;font-size:0.85rem;cursor:pointer;margin-left:8px;}
+  .feedback{margin-top:10px;padding:8px 10px;border-radius:3px;font-size:0.84rem;display:none;}
+  .feedback.correct{background:rgba(111,207,151,0.15);border:1px solid var(--success);color:var(--success);display:block;}
+  .feedback.incorrect{background:rgba(224,132,122,0.15);border:1px solid var(--error);color:var(--error);display:block;}
+  .prevnext{display:flex;justify-content:space-between;margin-top:26px;}
+  .prevnext button{background:transparent;border:1px solid var(--brass);color:var(--brass);
+    padding:9px 16px;border-radius:3px;font-size:0.8rem;cursor:pointer;}
+  .progress-line{font-size:0.7rem;color:var(--line-dim);margin-top:4px;}
+  footer{text-align:center;font-size:0.66rem;color:var(--line-dim);padding:20px;border-top:1px solid rgba(234,244,255,0.15);}
+  @media (min-width:640px){ h1{font-size:1.25rem;} .module h2{font-size:1.45rem;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titleblock">
+    <div>
+      <h1>Mechanical Engineering Curriculum</h1>
+      <div class="subtitle">18 courses · Beginner → Expert · offline field manual</div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="rank-seal" id="rankSeal">BEGINNER</div>
+      <div class="dial" id="dial" style="--pct:0"><span id="dialPct">0%</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="catbar" id="catBar"></div>
+<nav id="moduleNav"></nav>
+<main id="main"></main>
+<footer>All logic runs locally in this file. No network calls. Progress is saved on this device only.</footer>
+
+<script>
+/* ============ PLOTTING HELPER ============ */
+function drawPlot(canvas, opts){
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = canvas.clientWidth || 320;
+  const cssH = 200;
+  canvas.width = cssW * dpr; canvas.height = cssH * dpr;
+  canvas.style.height = cssH + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0,0,cssW,cssH);
+  const {xMin, xMax, yMin, yMax, curves = []} = opts;
+  const padL = 34, padB = 22, padT = 10, padR = 10;
+  const plotW = cssW - padL - padR, plotH = cssH - padT - padB;
+  function toPx(x, y){
+    const px = padL + ((x - xMin) / (xMax - xMin)) * plotW;
+    const py = padT + plotH - ((y - yMin) / (yMax - yMin)) * plotH;
+    return [px, py];
+  }
+  ctx.strokeStyle = "#8fa9bd"; ctx.lineWidth = 1; ctx.beginPath();
+  const [x0] = toPx(0,0); const [,y0] = toPx(0,0);
+  if (x0 >= padL && x0 <= cssW-padR){ ctx.moveTo(x0, padT); ctx.lineTo(x0, padT+plotH); }
+  if (y0 >= padT && y0 <= cssH-padB){ ctx.moveTo(padL, y0); ctx.lineTo(padL+plotW, y0); }
+  ctx.stroke();
+  ctx.strokeStyle = "#c3d3e0"; ctx.strokeRect(padL, padT, plotW, plotH);
+  curves.forEach(c => {
+    ctx.strokeStyle = c.color || "#1a3c5e"; ctx.lineWidth = c.width || 2; ctx.beginPath();
+    const steps = 100;
+    for (let i=0;i<=steps;i++){
+      const x = xMin + (xMax - xMin) * (i/steps);
+      const y = c.fn(x);
+      const [px,py] = toPx(x,y);
+      if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#4a6478"; ctx.font = "10px monospace";
+  ctx.fillText(xMin.toFixed(0), padL, cssH-6);
+  ctx.fillText(xMax.toFixed(0), cssW-padR-16, cssH-6);
+  ctx.fillText(yMax.toFixed(0), 2, padT+8);
+  ctx.fillText(yMin.toFixed(0), 2, cssH-padB);
+}
+
+/* ============ MODULE DATA — full ME curriculum ============ */
+const MODULES = [
+{ id:"mee101", cat:"Foundations", title:"Intro to Mechanical Engineering", tag:"MEE 101 · 1 Unit",
+  concept:"Mechanical engineering applies science to build things that work — it sits between pure science (why things happen) and technology (the tools that result). Every ME course you'll meet feeds into designing real machines: engines, structures, and systems.",
+  example:{label:"Worked example", lines:["A car engine in one machine:","Thermodynamics — burns fuel for heat","Mechanics — converts heat into motion","Materials science — metals survive the heat","All three branches meet in one design."]},
+  why:"Seeing how branches connect early helps you place every later course (thermo, statics, materials) into one mental map instead of treating them as unrelated subjects.",
+  exercises:[
+    {type:"mc", id:"mee101_1", q:"Which best separates science from engineering?", options:["Science discovers natural laws; engineering applies them to build solutions","They are identical","Science is only about machines","Engineering has no theory"], correct:0, explain:"Science explains; engineering builds using that explanation."},
+    {type:"mc", id:"mee101_2", q:"Which of these is NOT a core branch of mechanical engineering in this curriculum?", options:["Thermodynamics","Strength of Materials","Applied Mechanics","Corporate Law"], correct:3, explain:"Corporate law isn't a mechanical engineering discipline."}
+  ]
+},
+{ id:"get209", cat:"Mathematics", title:"Engineering Mathematics I", tag:"GET 209 · 3 Units",
+  concept:"This course extends single-variable calculus to many variables. Partial derivatives find a slope in one direction while holding others fixed, and double/triple integrals extend 'area under a curve' to volumes of real 3-D engineering solids.",
+  example:{label:"Worked example", lines:["Volume under z = xy over the unit square:","∫₀¹∫₀¹ xy dx dy","Inner integral (treat y as constant): x²y/2 from 0 to 1 = y/2","Outer integral: ∫₀¹ y/2 dy = 1/4"]},
+  why:"You can integrate one variable at a time because, for constant limits, each integral only 'sees' its own variable — the other is just a constant multiplier at that stage.",
+  exercises:[
+    {type:"input", id:"get209_1", q:"Compute ∫₀¹∫₀¹ xy dx dy", answer:0.25, tol:0.01, explain:"Inner integral gives y/2; outer integral gives 1/4."},
+    {type:"mc", id:"get209_2", q:"The partial derivative of f(x,y)=x²y with respect to x is:", options:["2xy","x²","2x","y²"], correct:0, explain:"Treat y as a constant and differentiate x² → 2x, then keep the y factor: 2xy."}
+  ]
+},
+{ id:"get210", cat:"Mathematics", title:"Engineering Mathematics II", tag:"GET 210 · 3 Units",
+  concept:"ODEs model change over time, as before. Complex numbers (x + iy treated as one object, z) let you solve 2-D field problems — fluid flow, electrical fields — with one equation instead of two. A function is 'analytic' when it satisfies the Cauchy-Riemann equations everywhere in a region.",
+  example:{label:"Worked example — Cauchy-Riemann check", lines:["f(z) = z² → u = x² − y², v = 2xy","∂u/∂x = 2x, ∂v/∂y = 2x → equal ✓","∂u/∂y = −2y, −∂v/∂x = −2y → equal ✓","f(z) = z² is analytic everywhere."]},
+  why:"Analytic functions behave predictably under differentiation and integration, which is why they unlock conformal mapping for solving real 2-D engineering fields.",
+  exercises:[
+    {type:"mc", id:"get210_1", q:"A complex function satisfying the Cauchy-Riemann equations everywhere is called:", options:["continuous","analytic","discrete","irrational"], correct:1, explain:"This is the definition of an analytic (holomorphic) function."},
+    {type:"input", id:"get210_2", q:"For f(z)=z², u(x,y)=x²−y². Find u at x=3, y=2.", answer:5, explain:"3² − 2² = 9 − 4 = 5."}
+  ]
+},
+{ id:"get301", cat:"Mathematics", title:"Engineering Mathematics III", tag:"GET 301 · 3 Units",
+  concept:"Matrices and tensors describe how a system responds in every direction at once. An eigenvector is a direction a transformation doesn't rotate — it only stretches it by a factor called the eigenvalue. This is exactly how engineers find principal stresses and natural vibration modes.",
+  example:{label:"Worked example", lines:["Matrix [[2,0],[0,3]] stretches x by 2 and y by 3.", "Eigenvalues: 2 and 3.", "Eigenvectors: along the x-axis and y-axis — each axis is stretched independently, not rotated."]},
+  why:"Because the matrix is diagonal, each axis is already an eigenvector — this is the simplest case and shows exactly what 'stretch without rotation' means before tackling non-diagonal matrices.",
+  exercises:[
+    {type:"input", id:"get301_1", q:"Matrix [[5,0],[0,−1]]. What is the larger eigenvalue?", answer:5, explain:"For a diagonal matrix, the eigenvalues are simply the diagonal entries: 5 and −1."},
+    {type:"mc", id:"get301_2", q:"Eigenvectors represent:", options:["Directions whose orientation is unchanged by a transformation","Random vectors","A concept only used in statistics","Imaginary numbers"], correct:0, explain:"They may stretch or shrink, but they keep pointing the same way (or exactly opposite)."}
+  ]
+},
+{ id:"get302", cat:"Mathematics", title:"Engineering Mathematics IV", tag:"GET 302 · 3 Units",
+  concept:"When an ODE is too irregular for an exact formula (like Bessel's equation), you solve it as an infinite power series instead. When no formula exists at all, numerical methods like Runge-Kutta step forward in small increments, trading perfect precision for a computable approximate answer.",
+  example:{label:"Worked example — Euler step (simplified Runge-Kutta idea)", lines:["dy/dx = y, y(0) = 1, step Δx = 0.1", "y(0.1) ≈ y(0) + 0.1 · f(0, y(0)) = 1 + 0.1(1) = 1.1", "Runge-Kutta improves this by averaging slopes across the step."]},
+  why:"Stepping forward using the slope at the start of each interval is the simplest numerical method (Euler's method); Runge-Kutta is more accurate because it samples the slope at multiple points within each step before advancing.",
+  exercises:[
+    {type:"mc", id:"get302_1", q:"Runge-Kutta methods are used when:", options:["An exact formula already exists","No closed-form solution exists and you need an approximate numerical answer","Only for linear algebra","Only for statistics"], correct:1, explain:"Numerical methods step toward an approximate answer when no exact solution is available."},
+    {type:"input", id:"get302_2", q:"Using a simple Euler step (Δx=0.1) on dy/dx=y, y(0)=1, estimate y(0.1).", answer:1.1, tol:0.05, explain:"y(0.1) ≈ y(0) + 0.1·f(0,y(0)) = 1 + 0.1(1) = 1.1."}
+  ]
+},
+{ id:"get106", cat:"Probability & Stats", title:"Probability I", tag:"GET 106 · 3 Units",
+  concept:"Probability is the fraction of times an outcome would occur if you repeated an experiment endlessly. Permutations count ordered arrangements; combinations count selections where order doesn't matter — engineers use both to model failure rates and risk.",
+  example:{label:"Worked example", lines:["Choose 3 items from 8, order doesn't matter:", "Permutations of 3 from 8: 8×7×6 = 336", "Divide by 3! = 6 (orders that count as the same group)", "Combinations C(8,3) = 336 / 6 = 56"]},
+  why:"Permutations overcount by every possible order of the same group; dividing by 3! removes that overcount to leave only distinct selections.",
+  exercises:[
+    {type:"input", id:"get106_1", q:"How many ways can you choose 2 items from 5 (combination, order doesn't matter)?", answer:10, explain:"C(5,2) = (5×4)/(2×1) = 10."},
+    {type:"input", id:"get106_2", q:"How many ways can you arrange 3 items from 5 in order (permutation)?", answer:60, explain:"P(5,3) = 5×4×3 = 60."}
+  ]
+},
+{ id:"get305", cat:"Probability & Stats", title:"Engineering Statistics & Data Analytics", tag:"GET 305 · 3 Units",
+  concept:"Descriptive statistics summarize a dataset with a few numbers (mean, spread). Regression fits the best straight line through data so you can predict one variable from another — this is how raw sensor or experiment data becomes an engineering decision.",
+  example:{label:"Worked example", lines:["Data pairs: (1,2), (2,4), (3,6)", "Points are perfectly linear with slope 2", "Fitted line: y = 2x — use it to predict future readings"]},
+  why:"A perfect linear fit like this is rare in real data; regression finds the line that minimizes the total squared distance from all points, even when they don't line up exactly.",
+  exercises:[
+    {type:"input", id:"get305_1", q:"Find the mean of: 3, 7, 7, 19", answer:9, explain:"(3+7+7+19)/4 = 36/4 = 9."},
+    {type:"mc", id:"get305_2", q:"Regression finds:", options:["The best-fit line minimizing prediction error","A random guess","Only the mean","Only the mode"], correct:0, explain:"Regression minimizes the overall error between the line and the actual data points."}
+  ]
+},
+{ id:"phy101", cat:"Physics & Mechanics", title:"General Physics I — Mechanics", tag:"PHY 101 · 2 Units",
+  concept:"Newton's three laws predict every mechanical motion problem: (1) an object keeps its motion unless a net force acts on it, (2) acceleration equals net force divided by mass (F = ma), (3) every force has an equal, opposite reaction force.",
+  example:{label:"Worked example", lines:["A 10 kg object is pushed with a 20 N net force.", "a = F / m = 20 / 10 = 2 m/s²"]},
+  why:"Rearranging F=ma to a=F/m is valid because mass is constant in this problem — the same law, just solved for a different unknown.",
+  exercises:[
+    {type:"input", id:"phy101_1", q:"A 5 kg mass experiences a 15 N net force. Find its acceleration (m/s²).", answer:3, explain:"a = F/m = 15/5 = 3 m/s²."},
+    {type:"mc", id:"phy101_2", q:"Newton's third law states:", options:["Forces come in equal, opposite pairs","Force equals mass times acceleration","Objects at rest stay at rest forever","Momentum is always zero"], correct:0, explain:"Every action force has an equal and opposite reaction force acting on the other body."}
+  ]
+},
+{ id:"phy102", cat:"Physics & Mechanics", title:"General Physics II — Behaviour of Matter", tag:"PHY 102 · 2 Units",
+  concept:"Heat flows spontaneously from hot to cold until temperatures equalize. For an ideal gas, pressure, volume, and temperature are linked (PV = nRT) — this single relationship underlies how engines, refrigerators, and materials behave when heated.",
+  example:{label:"Worked example — Boyle's law", lines:["Gas at 2 atm, 4 L, constant temperature", "P₁V₁ = P₂V₂ → 2 × 4 = P₂ × 8", "P₂ = 1 atm — doubling volume halves pressure"]},
+  why:"At constant temperature, PV stays constant (Boyle's law) — this is a special case of the ideal gas law when temperature and the amount of gas don't change.",
+  exercises:[
+    {type:"input", id:"phy102_1", q:"Gas at 2 atm, 4 L is compressed at constant temperature to 8 L... wait, expanded to 8 L. Find the new pressure (atm).", answer:1, explain:"P₁V₁ = P₂V₂ → 2×4 = P₂×8 → P₂ = 1 atm."},
+    {type:"mc", id:"phy102_2", q:"Which law states heat spontaneously flows from hot to cold, never the reverse (without work input)?", options:["First law of thermodynamics","Second law of thermodynamics","Newton's law","Boyle's law"], correct:1, explain:"The second law governs the direction heat naturally flows."}
+  ]
+},
+{ id:"getvib", cat:"Physics & Mechanics", title:"Vibration, Waves & Optics", tag:"RSU-GET 104 · 2 Units",
+  concept:"Simple harmonic motion repeats because the restoring force is proportional to displacement, like a spring. Its period depends only on the system's mass and stiffness — not on how far you pull it before releasing.",
+  example:{label:"Worked example", lines:["T = 2π√(m/k)", "m = 1 kg, k = 100 N/m", "T = 2π√(0.01) = 2π(0.1) ≈ 0.63 s"]},
+  plot:{ curves:[{fn:x=>Math.sin(2*Math.PI*x), color:"#1a3c5e", width:2}], xMin:0, xMax:3, yMin:-1.5, yMax:1.5 },
+  why:"The blue curve shows displacement over time for SHM — notice it repeats identically every period T, regardless of how the motion started.",
+  exercises:[
+    {type:"input", id:"getvib_1", q:"m=8kg, k=2N/m. Find the period T = 2π√(m/k) in seconds (2 d.p.).", answer:8.89, tol:0.3, explain:"T = 2π√(4) = 2π(2) ≈ 12.57s — check: √(8/2)=2, T=2π(2)=12.57. (Use tolerance for rounding.)"},
+    {type:"mc", id:"getvib_2", q:"Resonance occurs when:", options:["Driving frequency matches the natural frequency, causing large amplitude","Damping is infinite","Frequency is zero","Mass is zero"], correct:0, explain:"Matching frequencies pump energy into the system on every cycle, building amplitude."}
+  ]
+},
+{ id:"mth103", cat:"Physics & Mechanics", title:"Vectors, Geometry & Dynamics", tag:"MTH 103 · 2 Units",
+  concept:"A vector carries both size and direction. You add vectors by adding their components separately; the dot product measures how much two vectors point the same way — this is the foundation for resolving forces and analyzing velocity.",
+  example:{label:"Worked example", lines:["Vector A = (3, 4)", "Magnitude = √(3² + 4²) = √25 = 5"]},
+  why:"The magnitude formula is just the Pythagorean theorem applied to the vector's horizontal and vertical components — a vector is the hypotenuse of a right triangle formed by its components.",
+  exercises:[
+    {type:"input", id:"mth103_1", q:"Find the magnitude of vector (6, 8).", answer:10, explain:"√(6²+8²) = √100 = 10."},
+    {type:"input", id:"mth103_2", q:"Find the dot product of (2,3) and (4,1).", answer:11, explain:"(2×4) + (3×1) = 8 + 3 = 11."}
+  ]
+},
+{ id:"get206", cat:"Thermodynamics", title:"Fundamentals of Engineering Thermodynamics", tag:"GET 206 · 3 Units",
+  concept:"The first law of thermodynamics says energy can't be created or destroyed, only converted — heat added to a system equals the work it does plus the change in its internal energy. Engineers use this to size engines, turbines, and heat exchangers.",
+  example:{label:"Worked example", lines:["500 J of heat is added to a system.", "The system does 200 J of work.", "Change in internal energy = 500 − 200 = 300 J"]},
+  why:"This is just energy conservation rearranged: Heat In = Work Out + Internal Energy Change, so Internal Energy Change = Heat In − Work Out.",
+  exercises:[
+    {type:"input", id:"get206_1", q:"800 J of heat is added; the system does 300 J of work. Find the change in internal energy (J).", answer:500, explain:"500 = 800 − 300."},
+    {type:"mc", id:"get206_2", q:"Which system exchanges neither mass nor energy with its surroundings?", options:["Open system","Closed system","Isolated system","Control volume"], correct:2, explain:"A closed system can exchange energy but not mass; an isolated system exchanges neither."}
+  ]
+},
+{ id:"get207", cat:"Mechanics of Structures", title:"Applied Mechanics (Statics)", tag:"GET 207 · 3 Units",
+  concept:"A structure is in equilibrium when the sum of all forces and all moments (turning effects) equals zero in every direction. This single rule lets you solve for unknown support reactions in beams, bridges, and frames.",
+  example:{label:"Worked example", lines:["A 10 m beam carries a 100 N load at its center.", "Supported symmetrically at both ends.", "By symmetry, each support carries 50 N."]},
+  why:"Because the load sits exactly in the middle and the beam is symmetric, both supports must share the load equally — this is a direct consequence of the sum-of-moments being zero about either end.",
+  exercises:[
+    {type:"input", id:"get207_1", q:"A 20 m beam carries a 200 N load at its center, symmetric supports. Find the force at each support (N).", answer:100, explain:"By symmetry, 200N splits evenly: 100N at each end."},
+    {type:"mc", id:"get207_2", q:"The moment of a force about a point is calculated as:", options:["Force × mass","Force × perpendicular distance from the pivot","Force ÷ distance","Mass × acceleration"], correct:1, explain:"Moment (torque) = force × the perpendicular lever-arm distance to the pivot."}
+  ]
+},
+{ id:"mee311", cat:"Mechanics of Structures", title:"Engineering Mechanics (Dynamics)", tag:"RSU-MEE 311 · 2 Units",
+  concept:"Kinematics describes motion — position, velocity, acceleration — without asking why it happens. Kinetics adds force and mass to explain why the motion occurs. Together they predict how machines and vehicles move under load.",
+  example:{label:"Worked example", lines:["A car accelerates from rest at 2 m/s² for 5 s.", "Final velocity: v = at = 2×5 = 10 m/s", "Distance: s = ½at² = ½(2)(25) = 25 m"]},
+  plot:{ curves:[{fn:x=>2*x, color:"#1a3c5e", width:2}], xMin:0, xMax:5, yMin:0, yMax:10 },
+  why:"The graph shows velocity rising in a straight line because acceleration is constant — the area under this line is the distance travelled, matching the ½at² formula.",
+  exercises:[
+    {type:"input", id:"mee311_1", q:"An object accelerates from rest at 3 m/s² for 4 s. Find its final velocity (m/s).", answer:12, explain:"v = at = 3×4 = 12 m/s."},
+    {type:"input", id:"mee311_2", q:"Same object — find the distance travelled (m). (s = ½at²)", answer:24, explain:"s = ½(3)(4²) = ½(3)(16) = 24 m."}
+  ]
+},
+{ id:"get208", cat:"Mechanics of Structures", title:"Strength of Materials", tag:"GET 208 · 3 Units",
+  concept:"Stress is the force a material carries per unit cross-sectional area; strain is how much it deforms relative to its original size. Hooke's law says stress is proportional to strain, but only up to the material's elastic limit — beyond that, the material deforms permanently or breaks.",
+  example:{label:"Worked example", lines:["A rod with cross-section 2 cm² carries 400 N.", "Stress = 400 N / (2×10⁻⁴ m²) = 2,000,000 Pa = 2 MPa"]},
+  plot:{ curves:[{fn:x=> x<8 ? 25*x : 200-3*(x-8), color:"#1a3c5e", width:2}], xMin:0, xMax:12, yMin:0, yMax:220 },
+  why:"The graph shows stress rising linearly with strain (Hooke's law region) up to a yield point, after which the material stretches with little added stress — this bend marks the elastic limit.",
+  exercises:[
+    {type:"input", id:"get208_1", q:"A rod with area 5 cm² carries 1000 N. Find the stress in MPa.", answer:2, explain:"1000N / (5×10⁻⁴ m²) = 2,000,000 Pa = 2 MPa."},
+    {type:"mc", id:"get208_2", q:"Hooke's law (stress proportional to strain) holds:", options:["Always, for any load","Up to the material's elastic limit","Only for metals","Only for liquids"], correct:1, explain:"Beyond the elastic limit, materials deform permanently and stop following Hooke's law."}
+  ]
+},
+{ id:"mee321", cat:"Mechanics of Structures", title:"Introduction to Aerodynamics", tag:"RSU-MEE 321 · 2 Units",
+  concept:"Aerodynamic drag rises with the square of speed, not speed itself. Doubling a vehicle's speed quadruples the air resistance it must overcome — this is why fuel efficiency drops sharply at highway speeds.",
+  example:{label:"Worked example", lines:["F = ½ρv²C_dA", "Doubling v from 20 to 40 m/s multiplies F by 2² = 4×, not 2×."]},
+  plot:{ curves:[{fn:x=>0.5*1.2*x*x*0.3*2, color:"#1a3c5e", width:2}], xMin:0, xMax:30, yMin:0, yMax:350 },
+  why:"Because velocity is squared in the drag formula, the curve bends upward sharply — small speed increases at high speed cost disproportionately more drag force.",
+  exercises:[
+    {type:"mc", id:"mee321_1", q:"If speed doubles, aerodynamic drag force approximately:", options:["Doubles","Triples","Quadruples","Stays the same"], correct:2, explain:"Drag depends on v², so doubling v quadruples the drag force."},
+    {type:"input", id:"mee321_2", q:"Using F=½ρv²C_dA with ρ=1.2, v=10, C_d=0.3, A=2, compute F (N).", answer:36, tol:1, explain:"F = 0.5×1.2×100×0.3×2 = 36 N."}
+  ]
+},
+{ id:"get304", cat:"Professional Skills", title:"Technical Writing & Communication", tag:"GET 304 · 3 Units",
+  concept:"Good engineering writing states the conclusion first, then the supporting evidence. Readers — managers, clients — decide based on your first sentence, so burying the answer in the middle of a report wastes their time and risks miscommunication.",
+  example:{label:"Worked example", lines:["Weak: \"After testing three beam designs under various loads, considering cost and material availability... Design B is recommended.\"", "Strong: \"Recommend Design B — it costs 15% less and passed all load tests.\""]},
+  why:"Leading with the conclusion respects the reader's time and reduces the risk they stop reading before reaching your recommendation.",
+  exercises:[
+    {type:"mc", id:"get304_1", q:"The best technical report opens with:", options:["Background history","The conclusion or recommendation","A joke","An apology for delay"], correct:1, explain:"State the conclusion first, then support it with evidence."},
+    {type:"mc", id:"get304_2", q:"The 'Fog Index' in technical writing measures:", options:["Air pollution", "Readability / complexity of writing", "Gas density", "Wave frequency"], correct:1, explain:"The Fog Index estimates how hard a piece of writing is to read based on sentence length and word complexity."}
+  ]
+},
+{ id:"phypractical", cat:"Professional Skills", title:"Practical Physics & Measurement", tag:"PHY 107 / 108 · 2 Units",
+  concept:"Every measurement carries some uncertainty. Good lab practice means recording that uncertainty, not just a single number, and repeating measurements to average out random error — you can't design safely from a number you don't know the trustworthiness of.",
+  example:{label:"Worked example", lines:["Measuring a rod's length 5 times: 10.1, 10.2, 10.0, 10.1, 10.3 cm", "Mean = 10.14 cm", "Report: 10.1 ± 0.1 cm — not a single overconfident digit."]},
+  why:"Repeating a measurement and averaging cancels out random fluctuations (some readings too high, some too low), leaving a more trustworthy estimate plus a sense of its spread.",
+  exercises:[
+    {type:"input", id:"phyprac_1", q:"Find the mean of these measurements: 5.0, 5.2, 4.9, 5.1, 4.8", answer:5.0, tol:0.05, explain:"(5.0+5.2+4.9+5.1+4.8)/5 = 25/5 = 5.0."},
+    {type:"mc", id:"phyprac_2", q:"Recording only one measurement instead of repeating trials risks:", options:["Nothing important", "Missing random error and false confidence", "Saving time with no downside", "Higher accuracy"], correct:1, explain:"A single reading can't reveal how much random error is present, giving false confidence in the number."}
+  ]
+}
+];
+
+/* ============ STATE & PERSISTENCE ============ */
+const STORAGE_KEY = "me_curriculum_progress_v1";
+function loadProgress(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; }catch(e){ return {}; }
+}
+function saveProgress(p){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }catch(e){} }
+let progress = loadProgress();
+
+function totalExercises(){ return MODULES.reduce((n,m)=>n+m.exercises.length, 0); }
+function completedCount(){ return Object.values(progress).filter(Boolean).length; }
+function rankFor(pct){
+  if (pct >= 75) return "Expert";
+  if (pct >= 50) return "Advanced";
+  if (pct >= 25) return "Intermediate";
+  return "Beginner";
+}
+
+const CATEGORIES = ["All", ...Array.from(new Set(MODULES.map(m=>m.cat)))];
+let activeCat = "All";
+let currentIndex = 0;
+
+function visibleModules(){
+  return activeCat === "All" ? MODULES : MODULES.filter(m=>m.cat===activeCat);
+}
+
+/* ============ RENDER ============ */
+function renderCatBar(){
+  const bar = document.getElementById("catBar");
+  bar.innerHTML = "";
+  CATEGORIES.forEach(cat=>{
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    if (cat === activeCat) btn.classList.add("activeCat");
+    btn.onclick = ()=>{
+      activeCat = cat;
+      const vis = visibleModules();
+      const stillVisible = vis.some(m=>MODULES.indexOf(m)===currentIndex);
+      if (!stillVisible && vis.length) currentIndex = MODULES.indexOf(vis[0]);
+      renderAll();
+    };
+    bar.appendChild(btn);
+  });
+}
+
+function renderNav(){
+  const nav = document.getElementById("moduleNav");
+  nav.innerHTML = "";
+  visibleModules().forEach(m=>{
+    const i = MODULES.indexOf(m);
+    const btn = document.createElement("button");
+    btn.textContent = m.title;
+    if (i === currentIndex) btn.classList.add("active");
+    const done = m.exercises.every(ex => progress[ex.id]);
+    if (done) btn.classList.add("done");
+    btn.onclick = ()=>{ currentIndex = i; renderAll(); };
+    nav.appendChild(btn);
+  });
+}
+
+function renderModule(m, idx){
+  const sec = document.createElement("section");
+  sec.className = "module active";
+  sec.id = "mod-"+m.id;
+  const doneCount = m.exercises.filter(ex=>progress[ex.id]).length;
+
+  let html = `
+    <div class="tag">${m.tag}</div>
+    <h2>${m.title}</h2>
+    <div class="concept"><b>In short:</b> ${m.concept}</div>
+    <div class="example">
+      <div class="label">${m.example.label}</div>
+      ${m.example.lines.map(l=>`<span class="math">${l}</span>`).join("")}
+    </div>
+  `;
+  if (m.plot) html += `<canvas class="plot" id="plot-${m.id}"></canvas>`;
+  if (m.why) html += `<div class="why">Why: ${m.why}</div>`;
+  html += `<div class="progress-line">Exercises completed: ${doneCount} / ${m.exercises.length}</div>`;
+
+  m.exercises.forEach(ex=>{
+    html += `<div class="exercise" id="ex-${ex.id}"><div class="q">${ex.q}</div>`;
+    if (ex.type === "input"){
+      html += `<input type="text" inputmode="decimal" id="input-${ex.id}" placeholder="answer"><button class="submit-btn" data-check="${ex.id}">Check</button>`;
+    } else if (ex.type === "mc"){
+      ex.options.forEach((opt, oi)=>{
+        html += `<button class="opt-btn" data-mc="${ex.id}" data-idx="${oi}">${opt}</button>`;
+      });
+    }
+    html += `<div class="feedback" id="fb-${ex.id}"></div></div>`;
+  });
+
+  const vis = visibleModules();
+  const visIdx = vis.indexOf(m);
+  html += `<div class="prevnext">
+    <button id="prevBtn" ${visIdx===0?"disabled style='opacity:0.35'":""}>← Previous</button>
+    <button id="nextBtn" ${visIdx===vis.length-1?"disabled style='opacity:0.35'":""}>Next →</button>
+  </div>`;
+
+  sec.innerHTML = html;
+  return sec;
+}
+
+function attachHandlers(m){
+  m.exercises.forEach(ex=>{
+    if (ex.type === "input"){
+      const btn = document.querySelector(`[data-check="${ex.id}"]`);
+      btn.addEventListener("click", ()=>{
+        const val = document.getElementById("input-"+ex.id).value.trim();
+        const num = parseFloat(val);
+        const tol = ex.tol !== undefined ? ex.tol : 0.01;
+        const fb = document.getElementById("fb-"+ex.id);
+        if (!isNaN(num) && Math.abs(num - ex.answer) <= tol){
+          fb.className = "feedback correct"; fb.textContent = "Correct. " + ex.explain; markDone(ex.id);
+        } else {
+          fb.className = "feedback incorrect"; fb.textContent = "Not quite. " + ex.explain;
+        }
+      });
+    } else if (ex.type === "mc"){
+      document.querySelectorAll(`[data-mc="${ex.id}"]`).forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const idx = parseInt(b.getAttribute("data-idx"));
+          const fb = document.getElementById("fb-"+ex.id);
+          if (idx === ex.correct){
+            fb.className = "feedback correct"; fb.textContent = "Correct. " + ex.explain; markDone(ex.id);
+          } else {
+            fb.className = "feedback incorrect"; fb.textContent = "Not quite. " + ex.explain;
+          }
+        });
+      });
+    }
+  });
+
+  const vis = visibleModules();
+  const visIdx = vis.indexOf(m);
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  if (prevBtn) prevBtn.addEventListener("click", ()=>{ if(visIdx>0){ currentIndex = MODULES.indexOf(vis[visIdx-1]); renderAll(); window.scrollTo(0,0);} });
+  if (nextBtn) nextBtn.addEventListener("click", ()=>{ if(visIdx<vis.length-1){ currentIndex = MODULES.indexOf(vis[visIdx+1]); renderAll(); window.scrollTo(0,0);} });
+
+  if (m.plot){ const canvas = document.getElementById("plot-"+m.id); if (canvas) drawPlot(canvas, m.plot); }
+}
+
+function markDone(exId){
+  if (!progress[exId]){
+    progress[exId] = true; saveProgress(progress); updateGauge(true); renderNav();
+  }
+}
+
+function updateGauge(bump){
+  const total = totalExercises(); const done = completedCount();
+  const pct = total ? Math.round((done/total)*100) : 0;
+  const dial = document.getElementById("dial");
+  dial.style.setProperty("--pct", pct);
+  document.getElementById("dialPct").textContent = pct + "%";
+  const seal = document.getElementById("rankSeal");
+  const rank = rankFor(pct);
+  const changed = seal.textContent.trim().toUpperCase() !== rank.toUpperCase();
+  seal.textContent = rank;
+  if (bump && changed){ seal.classList.remove("bump"); void seal.offsetWidth; seal.classList.add("bump"); }
+}
+
+function renderAll(){
+  renderCatBar();
+  renderNav();
+  const main = document.getElementById("main");
+  main.innerHTML = "";
+  const sec = renderModule(MODULES[currentIndex], currentIndex);
+  main.appendChild(sec);
+  attachHandlers(MODULES[currentIndex]);
+  updateGauge(false);
+}
+
+renderAll();
+
+/* ============ PWA: register service worker for offline installability ============ */
+if ("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{ /* offline first load without sw is still fine */ });
+  });
+}
+</script>
+</body>
+</html>
